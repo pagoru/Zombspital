@@ -26,3 +26,11 @@ https://itch.io/jam/dream-arcade-archive
 - avanzar mapa
 - desangrarse
 - cuanto más rato quieto -> menos puntuación
+
+
+### puntuación final:
++ npapel higienico 
++ (tiempo * vida media) 
++ bolsas sangre recogidas 
+- zombies tocados
+- volver a pasar rastro sangre 

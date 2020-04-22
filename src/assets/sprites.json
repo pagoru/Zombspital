@@ -1,0 +1,19 @@
+{
+  "frames": {
+    "logo":
+    {
+      "frame": {"x":0,"y":80,"w":144,"h":48},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x":0,"y":0,"w":144,"h":48},
+      "sourceSize": {"w":144,"h":48}
+    }
+  },
+  "meta": {
+    "version": "1.0",
+    "image": "sprites.png",
+    "format": "RGBA8888",
+    "size": {"w":160,"h":160},
+    "scale": 1
+  }
+}

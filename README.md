@@ -1,8 +1,6 @@
-# Zombspital
-
-https://itch.io/jam/dream-arcade-archive
-
 ![logo](https://raw.githubusercontent.com/pagoru/Zombspital/master/logo.png)
+
+Jam: https://itch.io/jam/dream-arcade-archive
 
 - loop/end -> menu
 - score (replay)

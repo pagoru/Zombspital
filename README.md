@@ -1,4 +1,4 @@
-# TheDreamArcadeArchiveGame
+# Zombspital
 
 > loop/end -> menu
 > score (replay)

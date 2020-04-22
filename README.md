@@ -2,6 +2,8 @@
 
 https://itch.io/jam/dream-arcade-archive
 
+![logo](https://raw.githubusercontent.com/pagoru/Zombspital/master/logo.png)
+
 - loop/end -> menu
 - score (replay)
 - simple

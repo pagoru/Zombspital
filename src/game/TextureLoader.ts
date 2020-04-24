@@ -30,6 +30,6 @@ export class TextureLoader {
         })
     }
 
-    public getTexture = (name: string): PIXI.Texture => new PIXI.Texture(this.spriteSheet.textures[name])
+    public getTexture = (name: string): PIXI.Texture => this.spriteSheet.textures[name];
 
 }

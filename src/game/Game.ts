@@ -7,7 +7,6 @@ export class Game {
     public static instance: Game;
 
     public readonly version: string;
-
     public readonly canvas: Canvas;
 
     constructor() {

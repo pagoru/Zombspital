@@ -16,16 +16,17 @@
   "devDependencies": {
     "awesome-typescript-loader": "5.2.1",
     "file-loader": "6.0.0",
+    "html-webpack-plugin": "4.2.0",
+    "only-ttf-loader": "1.0.0",
+    "pixi.js": "5.2.2",
     "source-map-loader": "0.2.4",
+    "stats.js": "0.17.0",
+    "ts-key-enum": "^2.0.2",
     "tslint": "6.1.1",
     "tslint-loader": "3.5.4",
     "typescript": "3.8.3",
     "webpack": "4.43.0",
     "webpack-cli": "3.3.11",
-    "webpack-dev-server": "3.10.3",
-    "html-webpack-plugin": "4.2.0",
-    "only-ttf-loader": "1.0.0",
-    "pixi.js": "5.2.2",
-    "stats.js": "0.17.0"
+    "webpack-dev-server": "3.10.3"
   }
 }

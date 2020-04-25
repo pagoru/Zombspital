@@ -12,7 +12,6 @@ export class TextureLoader {
         await new Promise((resolve, reject) => {
             const loader = new PIXI.Loader();
             loader.add('sprites', require('../assets/sprites.png').default);
-            // loader.add('sprite', require('../assets/sprites.png').default);
             loader.on('progress', (l, resource) =>
                 console.log(`loading texture "${resource.name}"`));
             loader.on('complete', (loader, resources) => {
@@ -31,5 +30,8 @@ export class TextureLoader {
     }
 
     public getTexture = (name: string): PIXI.Texture => this.spriteSheet.textures[name];
+
+    public getPlayerTextures = (): Array<PIXI.Texture> => Array.from(Array(10).keys())
+        .map((index) => this.getTexture(`player_${index}`));
 
 }

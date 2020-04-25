@@ -27,6 +27,9 @@ export class Canvas extends PIXI.utils.EventEmitter {
     private readonly insertCoinScreen: InsertCoinScreen;
     private readonly playGroundScreen: PlayGroundScreen;
 
+    private addedDelta4: number = 0;
+    private addedDelta8: number = 0;
+
     constructor() {
         super();
         this.app = new PIXI.Application({
@@ -65,23 +68,33 @@ export class Canvas extends PIXI.utils.EventEmitter {
 
         this.insertCoinScreen.load();
         this.playGroundScreen.load();
-        this.stage().addChild(this.playGroundScreen, this.insertCoinScreen);
+        this.stage().addChild(
+            this.playGroundScreen,
+            // this.insertCoinScreen
+        );
     }
-    private addedDelta: number = 0;
 
     private loop = async (delta: number) => {
         const devStats = this.statsList;
         devStats.forEach(stat => stat.begin());
 
-        // normal loop
+        // 60 fps loop
         this.emit("loop", delta);
 
         // 15 fps loop
-        this.addedDelta += (delta / 8);
-        if(this.addedDelta > 1) {
+        this.addedDelta8 += (delta / 8);
+        if(this.addedDelta8 > 1) {
             const truncatedDelta = Math.trunc(delta);
-            this.emit("loop15", truncatedDelta);
-            this.addedDelta -= truncatedDelta;
+            this.emit("loop8", truncatedDelta);
+            this.addedDelta8 -= truncatedDelta;
+        }
+
+        // 30 fps loop
+        this.addedDelta4 += (delta / 4);
+        if(this.addedDelta4 > 1) {
+            const truncatedDelta = Math.trunc(delta);
+            this.emit("loop4", truncatedDelta);
+            this.addedDelta4 -= truncatedDelta;
         }
 
         devStats.forEach(stat => stat.end());

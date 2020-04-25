@@ -34,10 +34,10 @@ export class InsertCoinScreen extends PIXI.Container {
 
         this.addChild(this.logo, this.insertCoin);
 
-        canvas.on('loop15', this.loop15);
+        canvas.on('loop8', this.loop8);
     }
 
-    private loop15 = (delta: number) => {
+    private loop8 = (delta: number) => {
         switch (this.logoDirection) {
             case "down":
                 this.logo.position.y += delta;

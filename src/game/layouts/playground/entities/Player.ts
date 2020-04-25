@@ -1,3 +1,5 @@
+
+import * as PIXI from 'pixi.js';
 import {Entity} from "./Entity";
 import {Game} from "../../../Game";
 import {PlayerType} from "../../../types/PlayerType";
@@ -19,16 +21,23 @@ export class Player extends Entity {
         Game.instance.canvas.on('loop4', this.onLoop4);
         Game.instance.keyboard.on(this.onKeyboard);
 
-        this.onFrameChange = this._onFrameChange;
-        this.animationSpeed = 0.125;
+        this.animatedSprite.onFrameChange = this._onFrameChange;
+        this.animatedSprite.animationSpeed = 0.125;
+
+        if(type === 'solo') return;
+        const indicator = new PIXI.Sprite(Game.instance.canvas.textures.getTexture(type));
+        indicator.position.set(- (indicator.width - this.animatedSprite.width) / 2, -indicator.height - 2)
+        this.addChild(indicator);
+        if(type === 'p2') return;
+        Game.instance.canvas.uiScreen.scoreInterface.addSecondPlayer();
     }
 
     public _onFrameChange = (frame: number) => {
         switch (frame) {
             case 3:
-                return this.gotoAndPlay(1);
+                return this.animatedSprite.gotoAndPlay(1);
             case 8:
-                return this.gotoAndPlay(6);
+                return this.animatedSprite.gotoAndPlay(6);
         }
     }
 
@@ -54,11 +63,11 @@ export class Player extends Entity {
                 switch (direction) {
                     case PlayerDirection.DOWN:
                     case PlayerDirection.RIGHT:
-                        this.gotoAndPlay(0);
+                        this.animatedSprite.gotoAndPlay(0);
                         break;
                     case PlayerDirection.UP:
                     case PlayerDirection.LEFT:
-                        this.gotoAndPlay(5);
+                        this.animatedSprite.gotoAndPlay(5);
                         break;
                 }
             }
@@ -68,11 +77,11 @@ export class Player extends Entity {
                 switch (direction) {
                     case PlayerDirection.DOWN:
                     case PlayerDirection.RIGHT:
-                        this.gotoAndStop(0);
+                        this.animatedSprite.gotoAndStop(0);
                         break;
                     case PlayerDirection.UP:
                     case PlayerDirection.LEFT:
-                        this.gotoAndStop(5);
+                        this.animatedSprite.gotoAndStop(5);
                         break;
                 }
             }

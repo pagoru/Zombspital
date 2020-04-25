@@ -4,8 +4,9 @@ import * as Stats from "stats.js";
 import {TextureLoader} from "./TextureLoader";
 import {Camera} from "./Camera";
 import {CanvasEvents} from "./types/CanvasEvents";
-import {InsertCoinScreen} from "./screens/InsertCoinScreen";
-import {PlayGroundScreen} from "./screens/PlayGroundScreen";
+import {PlayGroundLayout} from "./layouts/PlayGroundLayout";
+import {UILayout} from "./layouts/UILayout";
+import {GlitchFilter} from '@pixi/filter-glitch';
 
 export class Canvas extends PIXI.utils.EventEmitter {
 
@@ -22,10 +23,13 @@ export class Canvas extends PIXI.utils.EventEmitter {
     public readonly textures: TextureLoader;
     public readonly camera: Camera;
 
+    public readonly filter: GlitchFilter;
+
     private readonly statsList: Array<Stats>;
 
-    private readonly insertCoinScreen: InsertCoinScreen;
-    private readonly playGroundScreen: PlayGroundScreen;
+    // private readonly insertCoinScreen: InsertCoinScreen;
+    public readonly uiLayout: UILayout;
+    public readonly playGroundLayout: PlayGroundLayout;
 
     private addedDelta4: number = 0;
     private addedDelta8: number = 0;
@@ -48,13 +52,21 @@ export class Canvas extends PIXI.utils.EventEmitter {
         document.body.appendChild(this.view());
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
+        this.filter = new GlitchFilter();
+        this.filter.slices = 0;
+        this.filter.red = new PIXI.Point(4, 0);
+        this.filter.blue = new PIXI.Point(4, 0);
+
+        this.stage().filters = [this.filter];
+
         this.camera = new Camera();
         this.textures = new TextureLoader();
 
         this.statsList = new Array<Stats>();
 
-        this.insertCoinScreen = new InsertCoinScreen();
-        this.playGroundScreen = new PlayGroundScreen();
+        this.uiLayout = new UILayout();
+        // this.insertCoinScreen = new InsertCoinScreen();
+        this.playGroundLayout = new PlayGroundLayout();
 
         this.load();
     }
@@ -66,18 +78,22 @@ export class Canvas extends PIXI.utils.EventEmitter {
         this.loadStats();
         this.app.ticker.add(this.loop);
 
-        this.insertCoinScreen.load();
-        this.playGroundScreen.load();
+        this.uiLayout.load();
+        this.playGroundLayout.load();
         this.stage().addChild(
-            this.playGroundScreen,
-            // this.insertCoinScreen
+            this.playGroundLayout,
+            this.uiLayout
         );
+    }
+
+    private updateFilter = () => {
+        this.filter.seed = Math.random()
+        // this.filter.slices = Math.random() * 1000;
     }
 
     private loop = async (delta: number) => {
         const devStats = this.statsList;
         devStats.forEach(stat => stat.begin());
-
         // 60 fps loop
         this.emit("loop", delta);
 
@@ -87,6 +103,8 @@ export class Canvas extends PIXI.utils.EventEmitter {
             const truncatedDelta = Math.trunc(delta);
             this.emit("loop8", truncatedDelta);
             this.addedDelta8 -= truncatedDelta;
+
+            this.updateFilter();
         }
 
         // 30 fps loop
@@ -105,8 +123,8 @@ export class Canvas extends PIXI.utils.EventEmitter {
             const stats = new Stats();
             stats.dom.style.left = '';
             stats.dom.style.right = `${80 * i + 8}px`;
-            stats.dom.style.top = `${8}px`;
-            stats.dom.style.bottom = ``;
+            stats.dom.style.top = ``;
+            stats.dom.style.bottom = `${8}px`;
             stats.showPanel(i);
             this.statsList.push(stats);
             document.body.appendChild(stats.dom)

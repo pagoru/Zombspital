@@ -1,10 +1,14 @@
 
 import * as PIXI from 'pixi.js';
 
-export class Entity extends PIXI.AnimatedSprite {
+export class Entity extends PIXI.Container {
+
+    protected readonly animatedSprite: PIXI.AnimatedSprite;
 
     constructor(textures: PIXI.Texture[]) {
-        super(textures);
+        super();
+        this.animatedSprite = new PIXI.AnimatedSprite(textures);
+        this.addChild(this.animatedSprite)
     }
 
     public addPosition = (
@@ -14,6 +18,5 @@ export class Entity extends PIXI.AnimatedSprite {
         this.position.x += x;
         this.position.y += y;
         this.zIndex += y;
-        console.log(this.zIndex)
     }
 }

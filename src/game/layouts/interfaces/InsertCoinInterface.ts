@@ -1,9 +1,9 @@
 
 import * as PIXI from 'pixi.js';
-import {Canvas} from "../Canvas";
-import {Game} from "../Game";
+import {Canvas} from "../../Canvas";
+import {Game} from "../../Game";
 
-export class InsertCoinScreen extends PIXI.Container {
+export class InsertCoinInterface extends PIXI.Container {
 
     private readonly logo: PIXI.Sprite;
     private readonly insertCoin: PIXI.Sprite;

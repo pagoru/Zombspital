@@ -209,6 +209,242 @@
       "trimmed": true,
       "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
       "sourceSize": {"w":16,"h":16}
+    },
+
+    "zombie_0":
+    {
+      "frame": {"x":48,"y":0,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "zombie_1":
+    {
+      "frame": {"x":48,"y":16,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "zombie_2":
+    {
+      "frame": {"x":48,"y":32,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "zombie_3":
+    {
+      "frame": {"x":48,"y":48,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "zombie_4":
+    {
+      "frame": {"x":48,"y":64,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "zombie_5":
+    {
+      "frame": {"x":32,"y":0,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "zombie_6":
+    {
+      "frame": {"x":32,"y":16,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "zombie_7":
+    {
+      "frame": {"x":32,"y":32,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "zombie_8":
+    {
+      "frame": {"x":32,"y":48,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "zombie_9":
+    {
+      "frame": {"x":32,"y":64,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+
+    "text_score":
+    {
+      "frame": {"x":64,"y":128,"w":30,"h":7},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":30,"h":7},
+      "sourceSize": {"w":30,"h":7}
+    },
+    "text_gameover":
+    {
+      "frame": {"x":64,"y":135,"w":52,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":52,"h":9},
+      "sourceSize": {"w":52,"h":9}
+    },
+    "text_0":
+    {
+      "frame": {"x":64,"y":151,"w":8,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
+      "sourceSize": {"w":8,"h":9}
+    },
+    "text_1":
+    {
+      "frame": {"x":72,"y":151,"w":5,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":5,"h":9},
+      "sourceSize": {"w":5,"h":9}
+    },
+    "text_2":
+    {
+      "frame": {"x":77,"y":151,"w":8,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
+      "sourceSize": {"w":8,"h":9}
+    },
+    "text_3":
+    {
+      "frame": {"x":85,"y":151,"w":8,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
+      "sourceSize": {"w":8,"h":9}
+    },
+    "text_4":
+    {
+      "frame": {"x":93,"y":151,"w":8,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
+      "sourceSize": {"w":8,"h":9}
+    },
+    "text_5":
+    {
+      "frame": {"x":101,"y":151,"w":8,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
+      "sourceSize": {"w":8,"h":9}
+    },
+    "text_6":
+    {
+      "frame": {"x":109,"y":151,"w":8,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
+      "sourceSize": {"w":8,"h":9}
+    },
+    "text_7":
+    {
+      "frame": {"x":117,"y":151,"w":8,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
+      "sourceSize": {"w":8,"h":9}
+    },
+    "text_8":
+    {
+      "frame": {"x":125,"y":151,"w":8,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
+      "sourceSize": {"w":8,"h":9}
+    },
+    "text_9":
+    {
+      "frame": {"x":133,"y":151,"w":8,"h":9},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
+      "sourceSize": {"w":8,"h":9}
+    },
+
+    "leftHeart":
+    {
+      "frame": {"x":0,"y":128,"w":53,"h":8},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":53,"h":8},
+      "sourceSize": {"w":53,"h":8}
+    },
+    "leftZombieHeart":
+    {
+      "frame": {"x":0,"y":144,"w":53,"h":8},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":53,"h":8},
+      "sourceSize": {"w":53,"h":8}
+    },
+    "leftZombiefication":
+    {
+      "frame": {"x":116,"y":132,"w":44,"h":4},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":44,"h":4},
+      "sourceSize": {"w":44,"h":4}
+    },
+    "rightHeart":
+    {
+      "frame": {"x":0,"y":136,"w":53,"h":8},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":53,"h":8},
+      "sourceSize": {"w":53,"h":8}
+    },
+    "rightZombieHeart":
+    {
+      "frame": {"x":0,"y":152,"w":53,"h":8},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":53,"h":8},
+      "sourceSize": {"w":53,"h":8}
+    },
+    "rightZombiefication":
+    {
+      "frame": {"x":116,"y":128,"w":44,"h":4},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":44,"h":4},
+      "sourceSize": {"w":44,"h":4}
+    },
+
+    "blood":
+    {
+      "frame": {"x":64,"y":41,"w":7,"h":7},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":7,"h":7},
+      "sourceSize": {"w":7,"h":7}
     }
   },
   "meta": {

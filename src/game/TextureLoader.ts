@@ -34,4 +34,7 @@ export class TextureLoader {
     public getPlayerTextures = (): Array<PIXI.Texture> => Array.from(Array(10).keys())
         .map((index) => this.getTexture(`player_${index}`));
 
+    public getZombieTextures = (): Array<PIXI.Texture> => Array.from(Array(10).keys())
+        .map((index) => this.getTexture(`zombie_${index}`));
+
 }

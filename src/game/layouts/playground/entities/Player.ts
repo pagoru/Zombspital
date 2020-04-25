@@ -5,6 +5,9 @@ import {Game} from "../../../Game";
 import {PlayerType} from "../../../types/PlayerType";
 import {Key} from "ts-key-enum";
 import {PlayerDirection} from "../../../types/PlayerDirection";
+import {Utils} from "../../../Utils";
+import GetRandomNumber = Utils.GetRandomNumber;
+import {Zombie} from "./Zombie";
 
 export class Player extends Entity {
 
@@ -12,24 +15,63 @@ export class Player extends Entity {
 
     private keyDownArray: Array<PlayerDirection>;
 
+    private zombiefication: number;
+    private zombificationInterval: any;
+
     constructor(type: PlayerType = 'solo') {
         super(Game.instance.canvas.textures.getPlayerTextures());
         this.type = type;
 
         this.keyDownArray = new Array<PlayerDirection>();
 
-        Game.instance.canvas.on('loop4', this.onLoop4);
-        Game.instance.keyboard.on(this.onKeyboard);
-
         this.animatedSprite.onFrameChange = this._onFrameChange;
         this.animatedSprite.animationSpeed = 0.125;
 
+        this.zombiefication = 0;
+
+        this.on('added', this.onAdded);
+        this.on('removed', this.onRemoved);
+
         if(type === 'solo') return;
         const indicator = new PIXI.Sprite(Game.instance.canvas.textures.getTexture(type));
-        indicator.position.set(- (indicator.width - this.animatedSprite.width) / 2, -indicator.height - 2)
+        indicator.position.set(- indicator.width / 2, - this.height - indicator.height - 2)
         this.addChild(indicator);
         if(type === 'p2') return;
-        Game.instance.canvas.uiScreen.scoreInterface.addSecondPlayer();
+        Game.instance.canvas.uiLayout.scoreInterface.addSecondPlayer();
+    }
+
+    private onAdded = () => {
+        Game.instance.canvas.on('loop4', this.onLoop4);
+        Game.instance.keyboard.on(this.onKeyboard);
+
+        this.zombificationInterval = setInterval(() => {
+            this.addZombiefication(Math.random() * 2);
+            this.addBlood();
+        }, 500);
+    }
+
+    private addBlood = () => {
+        const blood = new PIXI.Sprite(Game.instance.canvas.textures.getTexture('blood'));
+        blood.position.set(this.position.x - 4, this.position.y - 4)
+        blood.zIndex = blood.position.y;
+        blood.pivot = new PIXI.Point(GetRandomNumber(-1, 1), GetRandomNumber(-1, 1))
+        Game.instance.canvas.playGroundLayout.addChild(blood);
+    }
+
+    private onRemoved = () => {
+        clearInterval(this.zombificationInterval);
+        Game.instance.canvas.removeListener('loop4', this.onLoop4);
+        Game.instance.keyboard.removeListener(this.onKeyboard);
+
+        const zombie = new Zombie();
+        zombie.addPosition(this.position.x, this.position.y);
+        zombie.animatedSprite.gotoAndStop(this.animatedSprite.currentFrame);
+        Game.instance.canvas.playGroundLayout.addChild(zombie)
+    }
+
+    public addZombiefication = (amount: number) => {
+        this.zombiefication += amount;
+        Game.instance.canvas.uiLayout.scoreInterface.setZombiefication(this.type, this.zombiefication);
     }
 
     public _onFrameChange = (frame: number) => {
@@ -100,7 +142,9 @@ export class Player extends Entity {
             case player1 ? 'KeyA' : 'ArrowLeft':
                 setConfig(PlayerDirection.LEFT)
                 break;
+            case player1 ? 'KeyQ' : 'KeyR':
+                this.addBlood()
+                break;
         }
     }
-
 }

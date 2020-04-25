@@ -3,11 +3,12 @@ import * as PIXI from 'pixi.js';
 
 export class Entity extends PIXI.Container {
 
-    protected readonly animatedSprite: PIXI.AnimatedSprite;
+    public readonly animatedSprite: PIXI.AnimatedSprite;
 
     constructor(textures: PIXI.Texture[]) {
         super();
         this.animatedSprite = new PIXI.AnimatedSprite(textures);
+        this.animatedSprite.pivot.set(this.animatedSprite.width / 2, this.animatedSprite.height);
         this.addChild(this.animatedSprite)
     }
 

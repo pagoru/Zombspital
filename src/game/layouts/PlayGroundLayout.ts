@@ -21,7 +21,9 @@ export class PlayGroundLayout extends PIXI.Container {
         this.loadMap();
 
         this.player1 = new Player('p1');
+        this.player1.addPosition(20, 20);
         this.player2 = new Player('p2');
+        this.player2.addPosition(24, 20);
         this.addChild(this.player1, this.player2)
     }
 
@@ -31,7 +33,7 @@ export class PlayGroundLayout extends PIXI.Container {
                 if(tile === -1) return;
                 const _tileBlock = new PIXI.Sprite(Game.instance.canvas.textures.getTexture(`tile_${tile}`));
                 _tileBlock.position.set(x * 16, y * 16);
-                _tileBlock.zIndex = _tileBlock.position.y - (tile === 0 ? 16 : 0);
+                _tileBlock.zIndex = _tileBlock.position.y - (tile === 0 ? 32 : 0) + 16;
                 this.addChild(_tileBlock);
             });
         });

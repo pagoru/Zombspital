@@ -2,11 +2,11 @@
 import * as PIXI from 'pixi.js';
 import * as Stats from "stats.js";
 import {TextureLoader} from "./TextureLoader";
-import {Camera} from "./Camera";
 import {CanvasEvents} from "./types/CanvasEvents";
 import {PlayGroundLayout} from "./layouts/PlayGroundLayout";
 import {UILayout} from "./layouts/UILayout";
 import {GlitchFilter} from '@pixi/filter-glitch';
+import {Camera} from "./Camera";
 
 export class Canvas extends PIXI.utils.EventEmitter {
 
@@ -49,6 +49,7 @@ export class Canvas extends PIXI.utils.EventEmitter {
             Canvas.SCALE.x * Canvas.SCREEN_SCALE.x,
             Canvas.SCALE.y * Canvas.SCREEN_SCALE.y
         );
+        this.camera = new Camera();
         document.body.appendChild(this.view());
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
@@ -59,7 +60,6 @@ export class Canvas extends PIXI.utils.EventEmitter {
 
         this.stage().filters = [this.filter];
 
-        this.camera = new Camera();
         this.textures = new TextureLoader();
 
         this.statsList = new Array<Stats>();
@@ -73,7 +73,6 @@ export class Canvas extends PIXI.utils.EventEmitter {
 
     private load = async () => {
         await this.textures.load();
-        await this.camera.load();
 
         this.loadStats();
         this.app.ticker.add(this.loop);
@@ -121,8 +120,8 @@ export class Canvas extends PIXI.utils.EventEmitter {
     private loadStats = () => {
         for (let i = 0; i < 3; i++) {
             const stats = new Stats();
-            stats.dom.style.left = '';
-            stats.dom.style.right = `${80 * i + 8}px`;
+            stats.dom.style.left = `${80 * i + 8}px`;
+            stats.dom.style.right = ``;
             stats.dom.style.top = ``;
             stats.dom.style.bottom = `${8}px`;
             stats.showPanel(i);

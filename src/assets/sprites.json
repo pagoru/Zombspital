@@ -324,6 +324,14 @@
       "spriteSourceSize": {"x":0,"y":0,"w":52,"h":9},
       "sourceSize": {"w":52,"h":9}
     },
+    "text_pressP":
+    {
+      "frame": {"x":117,"y":136,"w":43,"h":11},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":43,"h":11},
+      "sourceSize": {"w":43,"h":11}
+    },
     "text_0":
     {
       "frame": {"x":64,"y":151,"w":8,"h":9},

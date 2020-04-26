@@ -1,5 +1,4 @@
 import {Canvas} from "./Canvas";
-import {Camera} from "./Camera";
 import {VERSION} from "./types/Constants";
 import {Keyboard} from "./Keyboard";
 

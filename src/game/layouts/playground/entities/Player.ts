@@ -11,12 +11,16 @@ import {Zombie} from "./Zombie";
 
 export class Player extends Entity {
 
-    private readonly type: PlayerType;
+    public readonly type: PlayerType;
 
     private keyDownArray: Array<PlayerDirection>;
 
     private zombiefication: number;
     private zombieficationInterval: any;
+
+    private requestChangeRoom: PIXI.Point;
+
+    private _isDead: boolean;
 
     constructor(type: PlayerType = 'solo') {
         super(Game.instance.canvas.textures.getPlayerTextures());
@@ -43,12 +47,32 @@ export class Player extends Entity {
     private onAdded = () => {
         Game.instance.canvas.on('loop4', this.onLoop4);
         Game.instance.keyboard.on(this.onKeyboard);
+        this.on('position_changed', this.onPositionChange);
 
         this.zombieficationInterval = setInterval(() => {
-            // this.addZombiefication(Math.random() * 2);
+            this.addZombiefication(Math.random() * 2);
             this.addBlood();
         }, 500);
     }
+
+    private onPositionChange = (position: PIXI.Point) => {
+        const playGroundLayout = Game.instance.canvas.playGroundLayout;
+        const currentRoomPositionCorrected = playGroundLayout.getCurrentRoomPositionCorrected();
+        const currentRoomMaxPositionCorrected = playGroundLayout.getCurrentRoomMaxPositionCorrected();
+
+        if(position.x + 1 === currentRoomMaxPositionCorrected.x)
+            return this.requestChangeRoom = new PIXI.Point(1, 0)
+        if(position.x === currentRoomPositionCorrected.x)
+            return this.requestChangeRoom = new PIXI.Point(-1, 0)
+        if(position.y + 1 === currentRoomMaxPositionCorrected.y)
+            return this.requestChangeRoom = new PIXI.Point(0, 1)
+        if(position.y === currentRoomPositionCorrected.y)
+            return this.requestChangeRoom = new PIXI.Point(0, -1)
+
+        return this.requestChangeRoom = null;
+    }
+
+    public getRequestChangeRoom = () => this.requestChangeRoom;
 
     private addBlood = () => {
         const blood = new PIXI.Sprite(Game.instance.canvas.textures.getTexture('blood'));
@@ -59,9 +83,11 @@ export class Player extends Entity {
     }
 
     private onRemoved = () => {
+        this._isDead = true;
         clearInterval(this.zombieficationInterval);
         Game.instance.canvas.removeListener('loop4', this.onLoop4);
         Game.instance.keyboard.removeListener(this.onKeyboard);
+        this.removeListener('position_changed', this.onPositionChange);
 
         const zombie = new Zombie();
         zombie.addPosition(this.position.x, this.position.y);
@@ -73,6 +99,7 @@ export class Player extends Entity {
         this.zombiefication += amount;
         Game.instance.canvas.uiLayout.scoreInterface.setZombiefication(this.type, this.zombiefication);
     }
+    public getZombiefication = () => this.zombiefication;
 
     public _onFrameChange = (frame: number) => {
         switch (frame) {
@@ -94,6 +121,7 @@ export class Player extends Entity {
             this.addPosition(-delta, 0);
     }
 
+    public isDead = () => this._isDead;
     private isDown = (direction: PlayerDirection) => this.keyDownArray.some(k => k === direction);
 
     private onKeyboard = (data: {code: string, key: Key | string, isDown: boolean}) => {
@@ -141,6 +169,9 @@ export class Player extends Entity {
                 break;
             case player1 ? 'KeyA' : 'ArrowLeft':
                 setConfig(PlayerDirection.LEFT)
+                break;
+            case player1 ? 'KeyP' : 'NOT_A_CODE':
+                Game.instance.canvas.playGroundLayout.loadPlayer2();
                 break;
             case player1 ? 'KeyQ' : 'KeyR':
                 // this.addBlood()

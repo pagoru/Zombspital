@@ -18,6 +18,12 @@ export class ScoreInterface extends PIXI.Container {
     private readonly leftZombieficationGraphics: PIXI.Graphics;
     private readonly rightZombieficationGraphics: PIXI.Graphics;
 
+    private readonly p2Text: PIXI.Sprite;
+    private readonly pressPText: PIXI.Sprite;
+    private pressPIterations: number = 0;
+    private pressPAlpha: 'show' | 'hide' = 'show';
+    private pressPTime: '8' | '4' | '0' = '8';
+
     public readonly score: ScoreText;
 
     constructor() {
@@ -64,13 +70,66 @@ export class ScoreInterface extends PIXI.Container {
         this.rightZombiefication.addChild(this.rightZombieficationGraphics)
         this.rightZombiefication.mask = this.rightZombieficationGraphics;
 
+
+        this.p2Text = new PIXI.Sprite(Game.instance.canvas.textures.getTexture('p2'));
+        this.p2Text.position.set(Canvas.SCALED_SIZE.w - this.p2Text.width - 1, Canvas.SCALED_SIZE.h - 9 - 2);
+
+        this.pressPText = new PIXI.Sprite(Game.instance.canvas.textures.getTexture('text_pressP'));
+        this.pressPText.position.set(this.p2Text.position.x - this.pressPText.width - 1, Canvas.SCALED_SIZE.h - this.pressPText.height - 2);
+
         this.addChild(
             this.leftHeart,
             this.leftZombiefication,
 
             this.scoreLabel,
-            this.score
+            this.score,
+
+            this.pressPText,
+            this.p2Text
         );
+
+        Game.instance.canvas.on('loop8', this.onLoop8);
+        Game.instance.canvas.on('loop4', this.onLoop4);
+    }
+
+    private onLoop4 = () => {
+        if(this.pressPTime === '4')
+            this.p2TextLoop();
+    }
+
+    private onLoop8 = () => {
+        if(this.pressPTime === '8')
+            this.p2TextLoop();
+    }
+
+    private p2TextLoop = () => {
+        switch (this.pressPAlpha) {
+            case "hide":
+                this.pressPText.alpha -= 0.125;
+                this.p2Text.alpha -= 0.125;
+                if(0 >= this.pressPText.alpha)
+                    this.pressPAlpha = 'show'
+                break;
+            case "show":
+                this.pressPText.alpha += 0.125;
+                this.p2Text.alpha += 0.125;
+                if(this.pressPText.alpha >= 1)
+                    this.pressPAlpha = 'hide'
+                break;
+        }
+        this.pressPIterations++;
+        if(this.pressPIterations > 150) {
+            this.pressPTime = '0'
+            this.pressPText.alpha = 0;
+            this.p2Text.alpha = 0;
+        } else if(this.pressPIterations > 50)
+            this.pressPTime = '4'
+    }
+
+    public canP2Spawn = () => this.pressPTime !== '0';
+
+    public removeSecondPlayerText = () => {
+        this.removeChild(this.p2Text, this.pressPText);
     }
 
     public addSecondPlayer = () => {

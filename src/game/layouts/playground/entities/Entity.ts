@@ -21,13 +21,13 @@ export class Entity extends PIXI.Container {
         const candidatePosition = new PIXI.Point(this.position.x + x, this.position.y + y)
 
         const playGroundLayout = Game.instance.canvas.playGroundLayout;
-        const currentRoomPosition = playGroundLayout.getCurrentRoomPosition();
+        const currentRoomPosition = playGroundLayout.getCurrentRoomPositionCorrected();
 
         let isIn = playGroundLayout.getCurrentRoomBounds()
             .map((arrX, y) => arrX.map((tile, x) => {
                 const tilePosition = new PIXI.Point(
-                    (currentRoomPosition.x * 9 * 16) + (x * 16),
-                    (currentRoomPosition.y * 6 * 16) + (y * 16)
+                    currentRoomPosition.x + (x * 16),
+                    currentRoomPosition.y + (y * 16)
                 );
                 return candidatePosition.x >= tilePosition.x
                     && candidatePosition.y >= tilePosition.y
@@ -41,5 +41,6 @@ export class Entity extends PIXI.Container {
 
         this.position.copyFrom(candidatePosition);
         this.zIndex += y;
+        this.emit('position_changed', this.position);
     }
 }

@@ -16,7 +16,7 @@ export class Player extends Entity {
     private keyDownArray: Array<PlayerDirection>;
 
     private zombiefication: number;
-    private zombificationInterval: any;
+    private zombieficationInterval: any;
 
     constructor(type: PlayerType = 'solo') {
         super(Game.instance.canvas.textures.getPlayerTextures());
@@ -44,8 +44,8 @@ export class Player extends Entity {
         Game.instance.canvas.on('loop4', this.onLoop4);
         Game.instance.keyboard.on(this.onKeyboard);
 
-        this.zombificationInterval = setInterval(() => {
-            this.addZombiefication(Math.random() * 2);
+        this.zombieficationInterval = setInterval(() => {
+            // this.addZombiefication(Math.random() * 2);
             this.addBlood();
         }, 500);
     }
@@ -59,7 +59,7 @@ export class Player extends Entity {
     }
 
     private onRemoved = () => {
-        clearInterval(this.zombificationInterval);
+        clearInterval(this.zombieficationInterval);
         Game.instance.canvas.removeListener('loop4', this.onLoop4);
         Game.instance.keyboard.removeListener(this.onKeyboard);
 
@@ -143,7 +143,8 @@ export class Player extends Entity {
                 setConfig(PlayerDirection.LEFT)
                 break;
             case player1 ? 'KeyQ' : 'KeyR':
-                this.addBlood()
+                // this.addBlood()
+                Game.instance.canvas.uiLayout.scoreInterface.score.addScore(1)
                 break;
         }
     }

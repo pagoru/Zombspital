@@ -3,6 +3,7 @@ import * as PIXI from 'pixi.js';
 import {Game} from "../../Game";
 import {Canvas} from "../../Canvas";
 import {PlayerType} from "../../types/PlayerType";
+import {ScoreText} from "./ScoreText";
 
 export class ScoreInterface extends PIXI.Container {
 
@@ -12,10 +13,12 @@ export class ScoreInterface extends PIXI.Container {
     private readonly leftZombiefication: PIXI.Sprite;
     private readonly rightZombiefication: PIXI.Sprite;
 
-    private readonly textScore: PIXI.Sprite;
+    private readonly scoreLabel: PIXI.Sprite;
 
     private readonly leftZombieficationGraphics: PIXI.Graphics;
     private readonly rightZombieficationGraphics: PIXI.Graphics;
+
+    public readonly score: ScoreText;
 
     constructor() {
         super();
@@ -27,14 +30,20 @@ export class ScoreInterface extends PIXI.Container {
         ]);
         this.leftHeart.position.set(1, 1);
 
-        this.textScore = new PIXI.Sprite(textures.getTexture('text_score'));
-        this.textScore.position.set(this.leftHeart.position.x + 1 + this.leftHeart.width, 1);
+        this.scoreLabel = new PIXI.Sprite(textures.getTexture('text_score'));
+        this.scoreLabel.position.set(this.leftHeart.position.x + 1 + this.leftHeart.width, 1);
+
+        this.score = new ScoreText();
+        this.score.position.set(
+            this.scoreLabel.position.x + (this.scoreLabel.width / 2),
+            this.scoreLabel.position.y + this.scoreLabel.height + 2
+        )
 
         this.rightHeart = new PIXI.AnimatedSprite([
             textures.getTexture('rightHeart'),
             textures.getTexture('rightZombieHeart')
         ]);
-        this.rightHeart.position.set(this.textScore.position.x + 1 + this.textScore.width, 1);
+        this.rightHeart.position.set(this.scoreLabel.position.x + 1 + this.scoreLabel.width, 1);
 
         this.leftZombiefication = new PIXI.Sprite(textures.getTexture('leftZombiefication'));
         this.leftZombiefication.position.set(9, 3);
@@ -59,7 +68,8 @@ export class ScoreInterface extends PIXI.Container {
             this.leftHeart,
             this.leftZombiefication,
 
-            this.textScore
+            this.scoreLabel,
+            this.score
         );
     }
 

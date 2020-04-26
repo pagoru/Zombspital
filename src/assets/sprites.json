@@ -88,6 +88,22 @@
       "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
       "sourceSize": {"w":16,"h":16}
     },
+    "tile_10":
+    {
+      "frame": {"x":80,"y":32,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
+    "tile_11":
+    {
+      "frame": {"x":96,"y":32,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
     "tile_12":
     {
       "frame": {"x":112,"y":32,"w":16,"h":16},

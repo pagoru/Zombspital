@@ -1,5 +1,6 @@
 
 import * as PIXI from 'pixi.js';
+import {Game} from "../../../Game";
 
 export class Entity extends PIXI.Container {
 
@@ -14,10 +15,31 @@ export class Entity extends PIXI.Container {
 
     public addPosition = (
         x: number,
-        y: number
+        y: number,
+        force: boolean = false
     ) => {
-        this.position.x += x;
-        this.position.y += y;
+        const candidatePosition = new PIXI.Point(this.position.x + x, this.position.y + y)
+
+        const playGroundLayout = Game.instance.canvas.playGroundLayout;
+        const currentRoomPosition = playGroundLayout.getCurrentRoomPosition();
+
+        let isIn = playGroundLayout.getCurrentRoomBounds()
+            .map((arrX, y) => arrX.map((tile, x) => {
+                const tilePosition = new PIXI.Point(
+                    (currentRoomPosition.x * 9 * 16) + (x * 16),
+                    (currentRoomPosition.y * 6 * 16) + (y * 16)
+                );
+                return candidatePosition.x >= tilePosition.x
+                    && candidatePosition.y >= tilePosition.y
+                    && candidatePosition.x < tilePosition.x + 16
+                    && candidatePosition.y < tilePosition.y + 16
+                    && tile === 0;
+
+            })).flat(2).find((tileBool: boolean) => tileBool);
+
+        if(!isIn && !force) return;
+
+        this.position.copyFrom(candidatePosition);
         this.zIndex += y;
     }
 }

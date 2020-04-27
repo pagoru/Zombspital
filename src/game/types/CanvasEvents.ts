@@ -1,3 +1,3 @@
 
 export type CanvasEvents =
-    'loop' | 'loop4' | 'loop8'
+    'loop' | 'loop4' | 'loop8' | string

@@ -4,6 +4,8 @@ import {Game} from "../Game";
 import {Player} from "./playground/entities/Player";
 import {PlayerType} from "../types/PlayerType";
 import {MapType} from "../types/MapType";
+import {Zombie} from "./playground/entities/Zombie";
+import {Utils} from "../Utils";
 
 export class PlayGroundLayout extends PIXI.Container {
 
@@ -14,6 +16,8 @@ export class PlayGroundLayout extends PIXI.Container {
     private currentRoomPosition: PIXI.Point;
 
     private requestedAddedPosition: PIXI.Point;
+
+    private currentPathRoomBounds: Array<Array<number>>;
 
     constructor() {
         super();
@@ -27,6 +31,13 @@ export class PlayGroundLayout extends PIXI.Container {
 
         this.player1 = new Player('solo');
         this.player1.addPosition(20, 20, true);
+
+        for (let i = 0; i < 400; i++) {
+            const zombie = new Zombie(Utils.GetRandomNumber(0, 3) === 1);
+            zombie.addPosition(40 + i, 20, true);
+            this.addChild(zombie)
+        }
+
         this.addChild(this.player1);
 
         Game.instance.canvas.on("loop", this.loop);
@@ -88,6 +99,11 @@ export class PlayGroundLayout extends PIXI.Container {
                 this.addChild(_tileBlock);
             });
         });
+        // Lol, try to understand this... lollollololololololololololololololololol :'D
+        this.currentPathRoomBounds =
+            Array.from(Array(this.getCurrentRoomBounds().length * 16).keys())
+                .map((y) => this.getCurrentRoomBounds()[Math.trunc(y / 16)]
+                .map(t => Array.from(Array(16).keys()).map(_ => t).flat(2) ).flat(2))
     }
 
     public loadRoom = (addPosition: PIXI.Point) => {
@@ -124,6 +140,8 @@ export class PlayGroundLayout extends PIXI.Container {
     public getCurrentRoomBounds = () => this.getCurrentRoom().tiles
         .map(arrX => arrX.map(tile => tile === 0 ? 0 : 1));
 
+    public getCurrentPathRoomBounds = () => this.currentPathRoomBounds;
+
     public killPlayer = (type: PlayerType) => {
         switch (type) {
             case "solo":
@@ -135,5 +153,8 @@ export class PlayGroundLayout extends PIXI.Container {
                 break;
         }
     }
+
+    public arePlayersDead = () => this.getPlayers().length === 0;
+    public getPlayers = () => [this.player1, this.player2].filter(p => p && !p.isDead());
 
 }

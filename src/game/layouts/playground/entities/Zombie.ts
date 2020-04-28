@@ -13,7 +13,7 @@ export class Zombie extends Entity {
     private currentDirection: PlayerDirection;
     
     constructor(hard: boolean = false) {
-        super(Game.instance.canvas.textures.getZombieTextures());
+        super('zombie');
 
         this.difficulty = hard ? '4' : '8';
         this.goto = [];
@@ -55,7 +55,7 @@ export class Zombie extends Entity {
                     break;
                 case PlayerDirection.UP:
                 case PlayerDirection.LEFT:
-                    this.animatedSprite.gotoAndStop(5);
+                    this.animatedSprite.gotoAndStop(3);
                     break;
             }
             return;
@@ -84,22 +84,24 @@ export class Zombie extends Entity {
         switch (this.currentDirection) {
             case PlayerDirection.DOWN:
             case PlayerDirection.RIGHT:
-                this.animatedSprite.gotoAndPlay(0);
+                this.animatedSprite.gotoAndPlay(1);
                 break;
             case PlayerDirection.UP:
             case PlayerDirection.LEFT:
-                this.animatedSprite.gotoAndPlay(5);
+                this.animatedSprite.gotoAndPlay(4);
                 break;
         }
 
     }
 
     public _onFrameChange = (frame: number) => {
+        if(!this.animatedSprite.playing) return;
+
         switch (frame) {
             case 3:
                 return this.animatedSprite.gotoAndPlay(1);
-            case 8:
-                return this.animatedSprite.gotoAndPlay(6);
+            case 0:
+                return this.animatedSprite.gotoAndPlay(4);
         }
     }
 }

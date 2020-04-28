@@ -6,6 +6,8 @@ import {PlayerType} from "../types/PlayerType";
 import {MapType} from "../types/MapType";
 import {Zombie} from "./playground/entities/Zombie";
 import {Utils} from "../Utils";
+import {CakeEntity} from "./playground/entities/CakeEntity";
+import {ObjectEntity} from "./playground/entities/ObjectEntity";
 
 export class PlayGroundLayout extends PIXI.Container {
 
@@ -19,11 +21,14 @@ export class PlayGroundLayout extends PIXI.Container {
 
     private currentPathRoomBounds: Array<Array<number>>;
 
+    private objectEntity: Array<ObjectEntity>;
+
     constructor() {
         super();
         this.map = require('../../assets/map.json');
         this.sortableChildren = true;
         this.currentRoomPosition = new PIXI.Point(0, 0);
+        this.objectEntity = new Array<ObjectEntity>();
     }
 
     public load = () => {
@@ -32,15 +37,28 @@ export class PlayGroundLayout extends PIXI.Container {
         this.player1 = new Player('solo');
         this.player1.addPosition(20, 20, true);
 
-        for (let i = 0; i < 400; i++) {
-            const zombie = new Zombie(Utils.GetRandomNumber(0, 3) === 1);
-            zombie.addPosition(40 + i, 20, true);
-            this.addChild(zombie)
-        }
+        // for (let i = 0; i < 400; i++) {
+        //     const zombie = new Zombie(Utils.GetRandomNumber(0, 3) === 1);
+        //     zombie.addPosition(40 + i, 20, true);
+        //     this.addChild(zombie)
+        // }
+
+        const cake = new CakeEntity();
+        cake.setPosition(30, 40);
+        this.addObjectEntity(cake);
 
         this.addChild(this.player1);
 
         Game.instance.canvas.on("loop", this.loop);
+    }
+
+    public addObjectEntity = (object: ObjectEntity) => {
+        this.addChild(object);
+        this.objectEntity.push(object);
+    }
+    public destroyObjectEntity = (object: ObjectEntity) => {
+        this.removeChild(object);
+        this.objectEntity = this.objectEntity.filter(o => o.id !== object.id);
     }
 
     public loadPlayer2 = () => {
@@ -156,5 +174,12 @@ export class PlayGroundLayout extends PIXI.Container {
 
     public arePlayersDead = () => this.getPlayers().length === 0;
     public getPlayers = () => [this.player1, this.player2].filter(p => p && !p.isDead());
+
+    public getCollidingObjectEntities = (position: PIXI.IPoint) =>
+        this.objectEntity.find(oe => oe.position.x + oe.width > position.x
+            && oe.position.x < position.x
+            && oe.position.y + oe.height > position.y
+            && oe.position.y < position.y
+        );
 
 }

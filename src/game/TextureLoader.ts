@@ -31,11 +31,8 @@ export class TextureLoader {
 
     public getTexture = (name: string): PIXI.Texture => this.spriteSheet.textures[name];
 
-    public getPlayerTextures = (): Array<PIXI.Texture> => Array.from(Array(10).keys())
-        .map((index) => this.getTexture(`player_${index}`));
-
-    public getZombieTextures = (): Array<PIXI.Texture> => Array.from(Array(10).keys())
-        .map((index) => this.getTexture(`zombie_${index}`));
+    public getEntityTextures = (name: string): Array<PIXI.Texture> => Array.from(Array(6).keys())
+        .map((index) => this.getTexture(`${name}_${index}`));
 
     public getNumberTextures = (): Array<PIXI.Texture> => Array.from(Array(10).keys())
         .map((index) => this.getTexture(`text_${index}`));

@@ -6,9 +6,9 @@ export class Entity extends PIXI.Container {
 
     public readonly animatedSprite: PIXI.AnimatedSprite;
 
-    constructor(textures: PIXI.Texture[]) {
+    constructor(entityName: string) {
         super();
-        this.animatedSprite = new PIXI.AnimatedSprite(textures);
+        this.animatedSprite = new PIXI.AnimatedSprite(Game.instance.canvas.textures.getEntityTextures(entityName));
         this.animatedSprite.pivot.set(this.animatedSprite.width / 2, this.animatedSprite.height);
         this.addChild(this.animatedSprite)
     }

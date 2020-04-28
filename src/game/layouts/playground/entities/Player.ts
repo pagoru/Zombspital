@@ -23,7 +23,7 @@ export class Player extends Entity {
     private _isDead: boolean;
 
     constructor(type: PlayerType = 'solo') {
-        super(Game.instance.canvas.textures.getPlayerTextures());
+        super( type === 'solo' || type === 'p1' ? 'marta' : 'pablo');
         this.type = type;
 
         this.keyDownArray = new Array<PlayerDirection>();
@@ -59,6 +59,9 @@ export class Player extends Entity {
         const playGroundLayout = Game.instance.canvas.playGroundLayout;
         const currentRoomPositionCorrected = playGroundLayout.getCurrentRoomPositionCorrected();
         const currentRoomMaxPositionCorrected = playGroundLayout.getCurrentRoomMaxPositionCorrected();
+
+        const objectCollided = Game.instance.canvas.playGroundLayout.getCollidingObjectEntities(this.position);
+        if(objectCollided) objectCollided.consume(this);
 
         if(position.x + 1 === currentRoomMaxPositionCorrected.x)
             return this.requestChangeRoom = new PIXI.Point(1, 0)
@@ -102,11 +105,13 @@ export class Player extends Entity {
     public getZombiefication = () => this.zombiefication;
 
     public _onFrameChange = (frame: number) => {
+        if(!this.animatedSprite.playing) return;
+
         switch (frame) {
             case 3:
                 return this.animatedSprite.gotoAndPlay(1);
-            case 8:
-                return this.animatedSprite.gotoAndPlay(6);
+            case 0:
+                return this.animatedSprite.gotoAndPlay(4);
         }
     }
 
@@ -133,11 +138,11 @@ export class Player extends Entity {
                 switch (direction) {
                     case PlayerDirection.DOWN:
                     case PlayerDirection.RIGHT:
-                        this.animatedSprite.gotoAndPlay(0);
+                        this.animatedSprite.gotoAndPlay(1);
                         break;
                     case PlayerDirection.UP:
                     case PlayerDirection.LEFT:
-                        this.animatedSprite.gotoAndPlay(5);
+                        this.animatedSprite.gotoAndPlay(4);
                         break;
                 }
             }
@@ -151,7 +156,7 @@ export class Player extends Entity {
                         break;
                     case PlayerDirection.UP:
                     case PlayerDirection.LEFT:
-                        this.animatedSprite.gotoAndStop(5);
+                        this.animatedSprite.gotoAndStop(3);
                         break;
                 }
             }

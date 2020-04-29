@@ -8,6 +8,7 @@ import {Zombie} from "./playground/entities/Zombie";
 import {Utils} from "../Utils";
 import {CakeEntity} from "./playground/entities/CakeEntity";
 import {ObjectEntity} from "./playground/entities/ObjectEntity";
+import GetRandomNumber = Utils.GetRandomNumber;
 
 export class PlayGroundLayout extends PIXI.Container {
 
@@ -21,14 +22,16 @@ export class PlayGroundLayout extends PIXI.Container {
 
     private currentPathRoomBounds: Array<Array<number>>;
 
-    private objectEntity: Array<ObjectEntity>;
+    private objectEntityList: Array<ObjectEntity>;
+    private zombieList: Array<Zombie>;
 
     constructor() {
         super();
         this.map = require('../../assets/map.json');
         this.sortableChildren = true;
         this.currentRoomPosition = new PIXI.Point(0, 0);
-        this.objectEntity = new Array<ObjectEntity>();
+        this.objectEntityList = new Array<ObjectEntity>();
+        this.zombieList = new Array<Zombie>();
     }
 
     public load = () => {
@@ -36,12 +39,6 @@ export class PlayGroundLayout extends PIXI.Container {
 
         this.player1 = new Player('solo');
         this.player1.addPosition(20, 20, true);
-
-        // for (let i = 0; i < 400; i++) {
-        //     const zombie = new Zombie(Utils.GetRandomNumber(0, 3) === 1);
-        //     zombie.addPosition(40 + i, 20, true);
-        //     this.addChild(zombie)
-        // }
 
         const cake = new CakeEntity();
         cake.setPosition(30, 40);
@@ -54,11 +51,56 @@ export class PlayGroundLayout extends PIXI.Container {
 
     public addObjectEntity = (object: ObjectEntity) => {
         this.addChild(object);
-        this.objectEntity.push(object);
+        this.objectEntityList.push(object);
     }
     public destroyObjectEntity = (object: ObjectEntity) => {
         this.removeChild(object);
-        this.objectEntity = this.objectEntity.filter(o => o.id !== object.id);
+        this.objectEntityList = this.objectEntityList.filter(o => o.id !== object.id);
+    }
+
+    public addZombie = (zombie: Zombie) => {
+        this.addChild(zombie);
+        this.zombieList.push(zombie);
+    }
+    public destroyZombie = (zombie: Zombie) => {
+        this.removeChild(zombie);
+        this.objectEntityList = this.objectEntityList.filter(o => o.id !== zombie.id);
+    }
+
+    public destroyAllZombiesAndPerks = () => {
+        console.log('zombies and perks dead')
+        this.removeChild(...this.objectEntityList, ...this.zombieList);
+        this.objectEntityList = [];
+        this.zombieList = [];
+    }
+
+    private generateZombiesAndPerks = () => {
+        const initialPosition = this.getCurrentRoomPositionCorrected();
+
+        const players = this.getPlayers();
+        let zombiefication = players.length === 0 ? -1 : players.map(p => p.getZombiefication()).reduce((c, z) => c + z) / players.length;
+
+        const zombiesNumber = GetRandomNumber(Math.trunc(zombiefication / 10), Math.trunc(zombiefication / 3));
+
+        for (let i = 0; i < zombiesNumber; i++) {
+            const zombie = new Zombie(Utils.GetRandomNumber(0, 3) === 1);
+            const randomSpot = this.getRandomFreeSpot();
+            zombie.addPosition(initialPosition.x + randomSpot.x,initialPosition.y + randomSpot.y, true);
+            this.addZombie(zombie)
+        }
+    }
+
+    private getRandomFreeSpot = () => {
+        const currentRoomBounds = this.getCurrentRoomBounds();
+        const randomPoint = new PIXI.Point(
+            GetRandomNumber(0, currentRoomBounds[0].length - 1),
+            GetRandomNumber(0, currentRoomBounds.length - 1)
+        );
+        const isEmpty = currentRoomBounds[randomPoint.y][randomPoint.x] === 0;
+        return isEmpty ?  new PIXI.Point(
+            randomPoint.x * 16 + GetRandomNumber(0, 15),
+            randomPoint.y * 16 + GetRandomNumber(0, 15)
+        ) : this.getRandomFreeSpot();
     }
 
     public loadPlayer2 = () => {
@@ -121,7 +163,8 @@ export class PlayGroundLayout extends PIXI.Container {
         this.currentPathRoomBounds =
             Array.from(Array(this.getCurrentRoomBounds().length * 16).keys())
                 .map((y) => this.getCurrentRoomBounds()[Math.trunc(y / 16)]
-                .map(t => Array.from(Array(16).keys()).map(_ => t).flat(2) ).flat(2))
+                .map(t => Array.from(Array(16).keys()).map(_ => t).flat(2) ).flat(2));
+        this.generateZombiesAndPerks();
     }
 
     public loadRoom = (addPosition: PIXI.Point) => {
@@ -131,14 +174,13 @@ export class PlayGroundLayout extends PIXI.Container {
             addPosition.x + this.currentRoomPosition.x,
             addPosition.y + this.currentRoomPosition.y
         );
-        const room = this.findRoom(candidate);
-        if(room) {
-            this.requestedAddedPosition = addPosition;
-            if(!this.player1.isDead())
-                this.player1.addPosition(addPosition.x * 2, addPosition.y * 2, true);
-            if(this.player2 && !this.player2.isDead())
-                this.player2.addPosition(addPosition.x * 2, addPosition.y * 2, true);
-        }
+        if(!this.findRoom(candidate)) return;
+        this.destroyAllZombiesAndPerks();
+        this.requestedAddedPosition = addPosition;
+        if(!this.player1.isDead())
+            this.player1.addPosition(addPosition.x * 2, addPosition.y * 2, true);
+        if(this.player2 && !this.player2.isDead())
+            this.player2.addPosition(addPosition.x * 2, addPosition.y * 2, true);
     }
 
     public getCurrentRoomPositionCorrected = () => new PIXI.Point(
@@ -176,7 +218,7 @@ export class PlayGroundLayout extends PIXI.Container {
     public getPlayers = () => [this.player1, this.player2].filter(p => p && !p.isDead());
 
     public getCollidingObjectEntities = (position: PIXI.IPoint) =>
-        this.objectEntity.find(oe => oe.position.x + oe.width > position.x
+        this.objectEntityList.find(oe => oe.position.x + oe.width > position.x
             && oe.position.x < position.x
             && oe.position.y + oe.height > position.y
             && oe.position.y < position.y

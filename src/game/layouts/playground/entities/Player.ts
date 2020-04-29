@@ -78,7 +78,7 @@ export class Player extends Entity {
     public getRequestChangeRoom = () => this.requestChangeRoom;
 
     private addBlood = () => {
-        const blood = new PIXI.Sprite(Game.instance.canvas.textures.getTexture('blood'));
+        const blood = new PIXI.Sprite(Game.instance.canvas.textures.getBloodTextures()[GetRandomNumber(0, 3)]);
         blood.position.set(this.position.x - 4, this.position.y - 4)
         blood.zIndex = blood.position.y;
         blood.pivot = new PIXI.Point(GetRandomNumber(-1, 1), GetRandomNumber(-1, 1))
@@ -92,10 +92,11 @@ export class Player extends Entity {
         Game.instance.keyboard.removeListener(this.onKeyboard);
         this.removeListener('position_changed', this.onPositionChange);
 
+        if(this.type === 'solo') return;
         const zombie = new Zombie();
         zombie.addPosition(this.position.x, this.position.y);
         zombie.animatedSprite.gotoAndStop(this.animatedSprite.currentFrame);
-        Game.instance.canvas.playGroundLayout.addChild(zombie)
+        Game.instance.canvas.playGroundLayout.addZombie(zombie)
     }
 
     public addZombiefication = (amount: number) => {

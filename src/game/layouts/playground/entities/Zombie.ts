@@ -28,7 +28,7 @@ export class Zombie extends Entity {
     }
 
     private onAdded = () => {
-        Game.instance.canvas.on(`loop${this.difficulty}`, this.onLoop4);
+        Game.instance.canvas.on(`loop${this.difficulty}`, this.onLoop4.bind(this));
         this.findInterval = setInterval(() => {
             const playGround = Game.instance.canvas.playGroundLayout;
             if(playGround.arePlayersDead()) return;
@@ -42,8 +42,8 @@ export class Zombie extends Entity {
     }
 
     private onRemoved = () => {
-        Game.instance.canvas.removeListener('loop4', this.onLoop4);
-        clearInterval(this.findInterval)
+        clearInterval(this.findInterval);
+        Game.instance.canvas.removeListener(`loop${this.difficulty}`, this.onLoop4);
     }
 
     private onLoop4 = (delta) => {

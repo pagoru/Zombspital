@@ -90,7 +90,7 @@
     },
     "tile_10":
     {
-      "frame": {"x":80,"y":32,"w":16,"h":16},
+      "frame": {"x":96,"y":32,"w":16,"h":16},
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -472,9 +472,33 @@
       "sourceSize": {"w":44,"h":4}
     },
 
-    "blood":
+    "blood_0":
     {
       "frame": {"x":144,"y":121,"w":7,"h":7},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":7,"h":7},
+      "sourceSize": {"w":7,"h":7}
+    },
+    "blood_1":
+    {
+      "frame": {"x":144,"y":114,"w":7,"h":7},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":7,"h":7},
+      "sourceSize": {"w":7,"h":7}
+    },
+    "blood_2":
+    {
+      "frame": {"x":151,"y":114,"w":7,"h":7},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":7,"h":7},
+      "sourceSize": {"w":7,"h":7}
+    },
+    "blood_3":
+    {
+      "frame": {"x":151,"y":121,"w":7,"h":7},
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {"x":0,"y":0,"w":7,"h":7},

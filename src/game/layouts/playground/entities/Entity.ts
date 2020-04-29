@@ -1,13 +1,17 @@
 
 import * as PIXI from 'pixi.js';
 import {Game} from "../../../Game";
+import {Utils} from "../../../Utils";
+import GetRandomString = Utils.GetRandomString;
 
 export class Entity extends PIXI.Container {
 
+    public readonly id;
     public readonly animatedSprite: PIXI.AnimatedSprite;
 
     constructor(entityName: string) {
         super();
+        this.id = GetRandomString(10);
         this.animatedSprite = new PIXI.AnimatedSprite(Game.instance.canvas.textures.getEntityTextures(entityName));
         this.animatedSprite.pivot.set(this.animatedSprite.width / 2, this.animatedSprite.height);
         this.addChild(this.animatedSprite)

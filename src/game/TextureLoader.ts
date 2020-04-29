@@ -37,4 +37,7 @@ export class TextureLoader {
     public getNumberTextures = (): Array<PIXI.Texture> => Array.from(Array(10).keys())
         .map((index) => this.getTexture(`text_${index}`));
 
+    public getBloodTextures = (): Array<PIXI.Texture> => Array.from(Array(4).keys())
+        .map((index) => this.getTexture(`blood_${index}`));
+
 }

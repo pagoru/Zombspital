@@ -45,7 +45,6 @@ export class CakeEntity extends ObjectEntity {
     }
 
     public onLoop4 = (delta: number) => {
-        console.log('loop4')
         this.loveSprites.forEach(ls => {
             ls.position.y -= delta;
             ls.alpha -= 0.025;

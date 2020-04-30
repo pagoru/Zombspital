@@ -9,6 +9,9 @@ import {Utils} from "../Utils";
 import {CakeEntity} from "./playground/entities/CakeEntity";
 import {ObjectEntity} from "./playground/entities/ObjectEntity";
 import GetRandomNumber = Utils.GetRandomNumber;
+import {BloodBagEntity} from "./playground/entities/BloodBagEntity";
+import {ToiletPaperEntity} from "./playground/entities/ToiletPaperEntity";
+import {SkullEntity} from "./playground/entities/SkullEntity";
 
 export class PlayGroundLayout extends PIXI.Container {
 
@@ -41,7 +44,7 @@ export class PlayGroundLayout extends PIXI.Container {
         this.player1.addPosition(20, 20, true);
 
         const cake = new CakeEntity();
-        cake.setPosition(30, 40);
+        cake.setPosition(new PIXI.Point(30, 40));
         this.addObjectEntity(cake);
 
         this.addChild(this.player1);
@@ -75,22 +78,56 @@ export class PlayGroundLayout extends PIXI.Container {
     }
 
     private generateZombiesAndPerks = () => {
-        const initialPosition = this.getCurrentRoomPositionCorrected();
 
         const players = this.getPlayers();
-        let zombiefication = players.length === 0 ? -1 : players.map(p => p.getZombiefication()).reduce((c, z) => c + z) / players.length;
+        let zombiefication = players.length === 0 ? 1 : players.map(p => p.getZombiefication()).reduce((c, z) => c + z) / players.length;
 
+        // zombie
         const zombiesNumber = GetRandomNumber(Math.trunc(zombiefication / 10), Math.trunc(zombiefication / 3));
-
         for (let i = 0; i < zombiesNumber; i++) {
             const zombie = new Zombie(Utils.GetRandomNumber(0, 3) === 1);
             const randomSpot = this.getRandomFreeSpot();
-            zombie.addPosition(initialPosition.x + randomSpot.x,initialPosition.y + randomSpot.y, true);
+            zombie.addPosition(randomSpot.x,randomSpot.y, true);
             this.addZombie(zombie)
         }
+
+        // blood bags
+        const bloodBagNumber = GetRandomNumber(players.length + 1, 2 * players.length + 1);
+        const bloodMin = GetRandomNumber(
+            Math.trunc((100 - zombiefication) / 10),
+            Math.trunc(zombiefication / 5)
+        );
+        for (let i = 0; i < bloodBagNumber; i++) {
+            const bloodBag = new BloodBagEntity(bloodMin, 50);
+            bloodBag.setPosition(this.getRandomFreeSpot());
+            this.addObjectEntity(bloodBag);
+        }
+
+        // cakes
+        if(GetRandomNumber(0, 100) === 4) {
+            const cake = new CakeEntity();
+            cake.setPosition(this.getRandomFreeSpot());
+            this.addObjectEntity(cake);
+        }
+
+        // toilet paper
+        for (let i = 0; i < GetRandomNumber(0, 3); i++) {
+            const toiletPaper = new ToiletPaperEntity();
+            toiletPaper.setPosition(this.getRandomFreeSpot());
+            this.addObjectEntity(toiletPaper);
+        }
+
+        // voidpixel skull
+        if(GetRandomNumber(0, 50) === 4) {
+            const cake = new SkullEntity();
+            cake.setPosition(this.getRandomFreeSpot());
+            this.addObjectEntity(cake);
+        }
+
     }
 
     private getRandomFreeSpot = () => {
+        const initialPosition = this.getCurrentRoomPositionCorrected();
         const currentRoomBounds = this.getCurrentRoomBounds();
         const randomPoint = new PIXI.Point(
             GetRandomNumber(0, currentRoomBounds[0].length - 1),
@@ -98,8 +135,8 @@ export class PlayGroundLayout extends PIXI.Container {
         );
         const isEmpty = currentRoomBounds[randomPoint.y][randomPoint.x] === 0;
         return isEmpty ?  new PIXI.Point(
-            randomPoint.x * 16 + GetRandomNumber(0, 15),
-            randomPoint.y * 16 + GetRandomNumber(0, 15)
+            initialPosition.x + randomPoint.x * 16 + GetRandomNumber(0, 15),
+            initialPosition.y + randomPoint.y * 16 + GetRandomNumber(0, 15)
         ) : this.getRandomFreeSpot();
     }
 
@@ -222,6 +259,13 @@ export class PlayGroundLayout extends PIXI.Container {
             && oe.position.x < position.x
             && oe.position.y + oe.height > position.y
             && oe.position.y < position.y
+        );
+
+    public getCollidingPlayers = (position: PIXI.IPoint) =>
+        this.getPlayers().find(oe => oe.position.x + 4 > position.x
+            && oe.position.x - 4 < position.x
+            && oe.position.y + 2 > position.y
+            && oe.position.y - 2 < position.y
         );
 
 }

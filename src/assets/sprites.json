@@ -503,6 +503,31 @@
       "trimmed": true,
       "spriteSourceSize": {"x":0,"y":0,"w":7,"h":7},
       "sourceSize": {"w":7,"h":7}
+    },
+
+    "blood_bag":
+    {
+      "frame": {"x":48,"y":64,"w":10,"h":6},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":10,"h":6},
+      "sourceSize": {"w":10,"h":6}
+    },
+    "toilet_paper":
+    {
+      "frame": {"x":48,"y":72,"w":7,"h":8},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":7,"h":8},
+      "sourceSize": {"w":7,"h":8}
+    },
+    "voidpixel_skull":
+    {
+      "frame": {"x":32,"y":52,"w":10,"h":12},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":10,"h":12},
+      "sourceSize": {"w":10,"h":12}
     }
   },
   "meta": {

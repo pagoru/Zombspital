@@ -50,8 +50,11 @@ export class Player extends Entity {
         this.on('position_changed', this.onPositionChange);
 
         this.zombieficationInterval = setInterval(() => {
-            this.addZombiefication(Math.random() * 2);
+            const zombiefication = Math.random() * 2
+            this.addZombiefication(zombiefication);
             this.addBlood();
+            if(this.getZombiefication() > 80)
+                Game.instance.canvas.uiLayout.scoreInterface.score.addScore(Math.trunc(zombiefication * 100));
         }, 500);
     }
 
@@ -92,7 +95,7 @@ export class Player extends Entity {
         Game.instance.keyboard.removeListener(this.onKeyboard);
         this.removeListener('position_changed', this.onPositionChange);
 
-        if(this.type === 'solo') return;
+        if(this.zombiefication < 100) return;
         const zombie = new Zombie();
         zombie.addPosition(this.position.x, this.position.y);
         zombie.animatedSprite.gotoAndStop(this.animatedSprite.currentFrame);
@@ -101,6 +104,8 @@ export class Player extends Entity {
 
     public addZombiefication = (amount: number) => {
         this.zombiefication += amount;
+        if(this.zombiefication < 0)
+            this.zombiefication = 0;
         Game.instance.canvas.uiLayout.scoreInterface.setZombiefication(this.type, this.zombiefication);
     }
     public getZombiefication = () => this.zombiefication;

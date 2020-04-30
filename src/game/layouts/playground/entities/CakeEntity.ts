@@ -28,10 +28,9 @@ export class CakeEntity extends ObjectEntity {
         }
     }
     public setPosition = (
-        x: number,
-        y: number
+        point: PIXI.Point
     ) => {
-        super.setPosition(x, y);
+        super.setPosition(point);
         this.martaText.position.copyFrom(this.position);
         this.loveSprites.forEach(ls => ls.position.set(this.position.x + GetRandomNumber(-20, 20), this.position.y + GetRandomNumber(-10, 10)));
     }
@@ -39,10 +38,15 @@ export class CakeEntity extends ObjectEntity {
     public consume = (player: Player) => {
         super.consume(player);
         Game.instance.canvas.on("loop4", this.onLoop4);
+        Game.instance.canvas.on("loop8", this.onLoop8);
         player.addZombiefication(- player.getZombiefication())
-        Game.instance.canvas.playGroundLayout.addChild(this.martaText, ...this.loveSprites);
-        Game.instance.canvas.uiLayout.scoreInterface.score.addScore(284);
+        Game.instance.canvas.playGroundLayout
+            .addChild(this.martaText, ...this.loveSprites);
+        Game.instance.canvas.uiLayout.scoreInterface
+            .score.addScore(284);
     }
+
+    public onLoop8 = (delta: number) => this.martaText.position.y -= delta;
 
     public onLoop4 = (delta: number) => {
         this.loveSprites.forEach(ls => {
@@ -55,6 +59,7 @@ export class CakeEntity extends ObjectEntity {
 
         Game.instance.canvas.playGroundLayout.removeChild(this.martaText, ...this.loveSprites);
         Game.instance.canvas.removeListener('loop4', this.onLoop4);
+        Game.instance.canvas.removeListener('loop8', this.onLoop8);
     }
 
 }

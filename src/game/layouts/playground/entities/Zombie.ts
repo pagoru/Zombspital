@@ -2,6 +2,8 @@ import {Entity} from "./Entity";
 import {Game} from "../../../Game";
 import {PathFinding} from "../../../PathFinding";
 import {PlayerDirection} from "../../../types/PlayerDirection";
+import {Utils} from "../../../Utils";
+import GetRandomNumber = Utils.GetRandomNumber;
 
 export class Zombie extends Entity {
 
@@ -60,6 +62,11 @@ export class Zombie extends Entity {
             }
             return;
         }
+        const collidingPlayers = Game.instance.canvas.playGroundLayout
+            .getCollidingPlayers(this.position);
+        if(collidingPlayers)
+            collidingPlayers.addZombiefication(GetRandomNumber(1, 2));
+
         const targetPosition = this.goto[0];
         const goX = this.position.x - targetPosition.x;
         const goY = this.position.y - targetPosition.y;

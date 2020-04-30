@@ -15,11 +15,12 @@ export class ObjectEntity extends PIXI.Sprite {
     }
 
     public setPosition (
-        x: number,
-        y: number
+        point: PIXI.Point
     ) {
-        this.position.copyFrom(new PIXI.Point(x, y));
-        this.zIndex += y;
+        point.x -= Math.trunc(this.width / 2);
+        point.y -= this.height;
+        this.position.copyFrom(point);
+        this.zIndex += point.y + 2;
     }
 
     public consume (player: Player) {

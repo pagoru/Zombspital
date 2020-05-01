@@ -46,6 +46,7 @@ export class PlayGroundLayout extends PIXI.Container {
     }
 
     public load = () => {
+        Game.instance.canvas.uiLayout.scoreInterface.reset();
         this.firstTime = false;
         this.requestedAddedPosition = this.getRandomRoom();
         Game.instance.canvas.uiLayout.show()

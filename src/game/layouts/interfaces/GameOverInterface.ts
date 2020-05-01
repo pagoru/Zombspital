@@ -35,7 +35,6 @@ export class GameOverInterface extends PIXI.Container {
             Game.instance.canvas.soundTheme.resume();
             Game.instance.canvas.insertCoinInterface.show();
             Game.instance.canvas.uiLayout.hide();
-            Game.instance.canvas.uiLayout.scoreInterface.reset();
         }, 5000);
     };
 

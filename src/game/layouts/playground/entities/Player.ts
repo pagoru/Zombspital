@@ -208,8 +208,8 @@ export class Player extends Entity {
                 Game.instance.canvas.playGroundLayout.loadPlayer2();
                 break;
             case player1 ? 'KeyQ' : 'KeyR':
-                // this.addBlood()
-                Game.instance.canvas.uiLayout.scoreInterface.score.addScore(1)
+                this.addBlood()
+                // Game.instance.canvas.uiLayout.scoreInterface.score.addScore(1)
                 break;
         }
     }

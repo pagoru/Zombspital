@@ -1,3 +1,6 @@
+
+import * as PIXI from 'pixi.js';
+import PIXISound from 'pixi-sound';
 import {Entity} from "./Entity";
 import {Game} from "../../../Game";
 import {PathFinding} from "../../../PathFinding";
@@ -10,15 +13,22 @@ export class Zombie extends Entity {
     private findInterval: any;
     private goto: Array<PIXI.Point>;
 
-    private difficulty: '8' |'4';
+    private readonly difficulty: '8' |'4';
 
     private currentDirection: PlayerDirection;
+
+    private readonly uwu: PIXI.Sprite;
     
     constructor(hard: boolean = false) {
         super('zombie');
 
         this.difficulty = hard ? '4' : '8';
         this.goto = [];
+
+        this.uwu = new PIXI.Sprite(Game.instance.canvas.textures.getTexture('uwu'));
+        this.uwu.position.set(3, - Math.trunc(this.animatedSprite.height + (this.uwu.height / 1.6)));
+        this.uwu.alpha = 0;
+        this.addChild(this.uwu)
 
         this.animatedSprite.onFrameChange = this._onFrameChange;
         this.animatedSprite.animationSpeed = 0.125;
@@ -30,7 +40,8 @@ export class Zombie extends Entity {
     }
 
     private onAdded = () => {
-        Game.instance.canvas.on(`loop${this.difficulty}`, this.onLoop4.bind(this));
+        Game.instance.canvas.on(`loop${this.difficulty}`, this.onLoop.bind(this));
+        Game.instance.canvas.on(`loop8`, this.onLoop8Fixed.bind(this));
         this.findInterval = setInterval(() => {
             const playGround = Game.instance.canvas.playGroundLayout;
             if(playGround.arePlayersDead()) return;
@@ -45,10 +56,24 @@ export class Zombie extends Entity {
 
     private onRemoved = () => {
         clearInterval(this.findInterval);
-        Game.instance.canvas.removeListener(`loop${this.difficulty}`, this.onLoop4);
+        Game.instance.canvas.removeListener(`loop${this.difficulty}`, this.onLoop);
+        Game.instance.canvas.removeListener(`loop8`, this.onLoop8Fixed.bind(this));
     }
 
-    private onLoop4 = (delta) => {
+    private showUWU = () => {
+        this.uwu.alpha = 1;
+
+        const uwuSound = PIXISound.Sound.from(require('../../../../assets/uwu.mp3').default);
+        uwuSound.volume = 0.125;
+        uwuSound.play();
+    };
+
+    private onLoop8Fixed = () => {
+        if(0 >= this.uwu.alpha) return;
+        this.uwu.alpha -= 0.025;
+    }
+
+    private onLoop = (delta) => {
         if(this.goto.length === 0) {
             switch (this.currentDirection) {
                 case PlayerDirection.DOWN:
@@ -64,8 +89,10 @@ export class Zombie extends Entity {
         }
         const collidingPlayers = Game.instance.canvas.playGroundLayout
             .getCollidingPlayers(this.position);
-        if(collidingPlayers)
-            collidingPlayers.addZombiefication(GetRandomNumber(1, 2));
+        if(collidingPlayers) {
+            collidingPlayers.bit();
+            this.showUWU();
+        }
 
         const targetPosition = this.goto[0];
         const goX = this.position.x - targetPosition.x;

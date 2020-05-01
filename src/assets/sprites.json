@@ -128,6 +128,14 @@
       "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
       "sourceSize": {"w":16,"h":16}
     },
+    "tile_18":
+    {
+      "frame": {"x":144,"y":16,"w":16,"h":16},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+      "sourceSize": {"w":16,"h":16}
+    },
 
     "p1":
     {
@@ -293,6 +301,15 @@
       "sourceSize": {"w":16,"h":16}
     },
 
+    "uwu":
+    {
+      "frame": {"x":0,"y":52,"w":17,"h":12},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":17,"h":12},
+      "sourceSize": {"w":17,"h":12}
+    },
+
     "text_score":
     {
       "frame": {"x":64,"y":128,"w":30,"h":7},
@@ -396,6 +413,14 @@
       "trimmed": true,
       "spriteSourceSize": {"x":0,"y":0,"w":8,"h":9},
       "sourceSize": {"w":8,"h":9}
+    },
+    "splash":
+    {
+      "frame": {"x":48,"y":48,"w":48,"h":15},
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {"x":0,"y":0,"w":48,"h":15},
+      "sourceSize": {"w":48,"h":15}
     },
 
     "text_marta":

@@ -12,6 +12,8 @@ export class ScoreText extends PIXI.Container {
         this.addScore(0);
     }
 
+    public reset = () => this.addScore(- this.actualScore);
+
     public addScore = (amount: number) => {
         this.actualScore += amount
 

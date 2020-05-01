@@ -22,6 +22,8 @@ export class Camera {
 
         canvas.stage().position.copyFrom(position);
         canvas.uiLayout.position.copyFrom(canvasPosition);
+        canvas.insertCoinInterface.position.copyFrom(canvasPosition);
+        canvas.gameOverInterface.position.copyFrom(canvasPosition);
     }
 
 }

@@ -1,5 +1,6 @@
 
 import * as PIXI from 'pixi.js';
+import PIXISound from 'pixi-sound';
 import * as Stats from "stats.js";
 import {TextureLoader} from "./TextureLoader";
 import {CanvasEvents} from "./types/CanvasEvents";
@@ -7,6 +8,8 @@ import {PlayGroundLayout} from "./layouts/PlayGroundLayout";
 import {UILayout} from "./layouts/UILayout";
 import {GlitchFilter} from '@pixi/filter-glitch';
 import {Camera} from "./Camera";
+import {InsertCoinInterface} from "./layouts/interfaces/InsertCoinInterface";
+import {GameOverInterface} from "./layouts/interfaces/GameOverInterface";
 
 export class Canvas extends PIXI.utils.EventEmitter {
 
@@ -27,19 +30,22 @@ export class Canvas extends PIXI.utils.EventEmitter {
 
     private readonly statsList: Array<Stats>;
 
-    // private readonly insertCoinScreen: InsertCoinScreen;
+    public readonly insertCoinInterface: InsertCoinInterface;
     public readonly uiLayout: UILayout;
     public readonly playGroundLayout: PlayGroundLayout;
+    public readonly gameOverInterface: GameOverInterface;
 
     private addedDelta4: number = 0;
     private addedDelta8: number = 0;
+
+    public soundTheme: any;
 
     constructor() {
         super();
         this.app = new PIXI.Application({
             width: Canvas.SIZE.w * Canvas.SCREEN_SCALE.x,
             height: Canvas.SIZE.h * Canvas.SCREEN_SCALE.y,
-            backgroundColor: 0x000000,
+            backgroundColor: 0xFFFFFF,
             antialias: true,
             resolution: 1,
             autoDensity: true
@@ -65,24 +71,62 @@ export class Canvas extends PIXI.utils.EventEmitter {
         this.statsList = new Array<Stats>();
 
         this.uiLayout = new UILayout();
-        // this.insertCoinScreen = new InsertCoinScreen();
+        this.insertCoinInterface = new InsertCoinInterface();
         this.playGroundLayout = new PlayGroundLayout();
+        this.gameOverInterface = new GameOverInterface();
+        this.loadSplash();
+    }
 
-        this.load();
+    private loadSplash = async () => {
+        this.app.ticker.add(this.loop);
+
+        await this.textures.load();
+
+        // this.load();
+        const splash = new PIXI.Sprite(this.textures.getTexture('splash'));
+        splash.alpha = 0;
+        splash.position.set(
+            Math.trunc(Canvas.SCALED_SIZE.w / 2 - splash.width / 2),
+            Math.trunc(Canvas.SCALED_SIZE.h / 2 - splash.height / 2)
+        )
+        let pos = 0;
+        const loop8 = () => {
+            switch (pos) {
+                case 0:
+                    splash.alpha += 0.125;
+                    if(splash.alpha > 3)
+                        pos = 1;
+                    break;
+                case 1:
+                    splash.alpha -= 0.25;
+                    if(splash.alpha < -3)
+                        pos = 2;
+                    break;
+                case 2:
+                    this.removeListener('loop8', loop8);
+                    this.renderer().backgroundColor = 0x000000;
+                    this.load();
+                    break;
+            }
+        }
+        this.on('loop8', loop8);
+        this.stage().addChild(splash);
     }
 
     private load = async () => {
-        await this.textures.load();
+        this.soundTheme = PIXISound.Sound.from(require('../assets/theme.mp3').default);
+        this.soundTheme.loop = true;
+        this.soundTheme.volume = 0.125;
+        this.soundTheme.play();
 
-        this.loadStats();
-        this.app.ticker.add(this.loop);
+        // this.loadStats();
 
         this.uiLayout.load();
-        this.playGroundLayout.load();
-        this.stage().addChild(
-            this.playGroundLayout,
-            this.uiLayout
-        );
+        this.playGroundLayout.firstLoad();
+        this.insertCoinInterface.load();
+        this.gameOverInterface.load();
+
+        this.stage().addChild(this.playGroundLayout, this.gameOverInterface);
     }
 
     private updateFilter = () => {

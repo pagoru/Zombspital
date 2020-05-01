@@ -92,6 +92,21 @@ export class ScoreInterface extends PIXI.Container {
         Game.instance.canvas.on('loop4', this.onLoop4);
     }
 
+    public reset = () => {
+        this.addChild(this.pressPText, this.p2Text);
+        this.pressPTime = '8';
+        this.pressPAlpha = 'show';
+        this.pressPIterations = 0;
+        this.addChild(this.p2Text, this.pressPText);
+        this.score.reset();
+        this.rightHeart.gotoAndStop(0);
+        this.leftHeart.gotoAndStop(0);
+        this.addChild(this.leftZombiefication);
+        this.removeChild(this.rightHeart, this.rightZombiefication);
+        this.setZombiefication('p1', 0);
+        this.setZombiefication('p2', 0);
+    }
+
     private onLoop4 = () => {
         if(this.pressPTime === '4')
             this.p2TextLoop();

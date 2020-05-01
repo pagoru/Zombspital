@@ -21,6 +21,7 @@ export class Player extends Entity {
     private requestChangeRoom: PIXI.Point;
 
     private _isDead: boolean;
+    private bitten: number;
 
     constructor(type: PlayerType = 'solo') {
         super( type === 'solo' || type === 'p1' ? 'marta' : 'pablo');
@@ -32,6 +33,7 @@ export class Player extends Entity {
         this.animatedSprite.animationSpeed = 0.125;
 
         this.zombiefication = 0;
+        this.bitten = 0;
 
         this.on('added', this.onAdded);
         this.on('removed', this.onRemoved);
@@ -46,16 +48,18 @@ export class Player extends Entity {
 
     private onAdded = () => {
         Game.instance.canvas.on('loop4', this.onLoop4);
+        Game.instance.canvas.on('loop8', this.onLoop8);
         Game.instance.keyboard.on(this.onKeyboard);
         this.on('position_changed', this.onPositionChange);
 
         this.zombieficationInterval = setInterval(() => {
             const zombiefication = Math.random() * 2
             this.addZombiefication(zombiefication);
-            this.addBlood();
             if(this.getZombiefication() > 80)
                 Game.instance.canvas.uiLayout.scoreInterface.score.addScore(Math.trunc(zombiefication * 100));
         }, 500);
+
+
     }
 
     private onPositionChange = (position: PIXI.Point) => {
@@ -92,6 +96,7 @@ export class Player extends Entity {
         this._isDead = true;
         clearInterval(this.zombieficationInterval);
         Game.instance.canvas.removeListener('loop4', this.onLoop4);
+        Game.instance.canvas.removeListener('loop8', this.onLoop8);
         Game.instance.keyboard.removeListener(this.onKeyboard);
         this.removeListener('position_changed', this.onPositionChange);
 
@@ -102,11 +107,24 @@ export class Player extends Entity {
         Game.instance.canvas.playGroundLayout.addZombie(zombie)
     }
 
+    public bit = () => {
+        this.addZombiefication(GetRandomNumber(1, 2));
+        if(this.bitten > 8) return;
+        this.bitten++;
+    }
+
     public addZombiefication = (amount: number) => {
+        // this.zombiefication = 80;
+        // Game.instance.canvas.uiLayout.scoreInterface.setZombiefication(this.type, this.zombiefication);
+        // return;
+        if(0 > amount && this.bitten > 0)
+            this.bitten--;
         this.zombiefication += amount;
         if(this.zombiefication < 0)
             this.zombiefication = 0;
         Game.instance.canvas.uiLayout.scoreInterface.setZombiefication(this.type, this.zombiefication);
+
+        Game.instance.canvas.soundTheme.speed = this.zombiefication > 80 ? 1.3 : 1;
     }
     public getZombiefication = () => this.zombiefication;
 
@@ -130,6 +148,11 @@ export class Player extends Entity {
             this.addPosition(delta, 0);
         if(this.isDown(PlayerDirection.LEFT))
             this.addPosition(-delta, 0);
+    }
+
+    private onLoop8 = () => {
+        if(GetRandomNumber(0, 10 - this.bitten) !== 0) return;
+        this.addBlood();
     }
 
     public isDead = () => this._isDead;

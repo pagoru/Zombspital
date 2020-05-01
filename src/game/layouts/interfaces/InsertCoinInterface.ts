@@ -2,6 +2,7 @@
 import * as PIXI from 'pixi.js';
 import {Canvas} from "../../Canvas";
 import {Game} from "../../Game";
+import {Key} from "ts-key-enum";
 
 export class InsertCoinInterface extends PIXI.Container {
 
@@ -18,6 +19,7 @@ export class InsertCoinInterface extends PIXI.Container {
         this.logo = new PIXI.Sprite();
         this.insertCoin = new PIXI.Sprite();
         this.addChild(this.logo, this.insertCoin);
+        this.zIndex = Number.MAX_SAFE_INTEGER - 1;
     }
 
     public load = () => {
@@ -33,8 +35,21 @@ export class InsertCoinInterface extends PIXI.Container {
         this.insertCoin.position.set(Canvas.SCALED_SIZE.w / 2, Canvas.SCALED_SIZE.h / 2 + 30)
 
         this.addChild(this.logo, this.insertCoin);
+        Game.instance.keyboard.on(this.onKeyboard);
 
         canvas.on('loop8', this.loop8);
+        Game.instance.canvas.stage().addChild(this);
+    }
+
+    public show = () => {
+        Game.instance.keyboard.on(this.onKeyboard);
+        Game.instance.canvas.stage().addChild(this);
+    }
+
+    public unload = () => {
+        Game.instance.canvas.playGroundLayout.destroyAllZombiesAndPerks();
+        Game.instance.keyboard.removeListener(this.onKeyboard);
+        Game.instance.canvas.stage().removeChild(this);
     }
 
     private loop8 = (delta: number) => {
@@ -64,6 +79,10 @@ export class InsertCoinInterface extends PIXI.Container {
                     this.insertCoinAlpha = 'hide'
                 break;
         }
+    }
+    private onKeyboard = (data: {code: string, key: Key | string, isDown: boolean}) => {
+        Game.instance.canvas.playGroundLayout.load();
+        this.unload();
     }
 
 }

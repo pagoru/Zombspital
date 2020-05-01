@@ -28,6 +28,8 @@ export class PlayGroundLayout extends PIXI.Container {
     private objectEntityList: Array<ObjectEntity>;
     private zombieList: Array<Zombie>;
 
+    private firstTime: boolean;
+
     constructor() {
         super();
         this.map = require('../../assets/map.json');
@@ -35,21 +37,18 @@ export class PlayGroundLayout extends PIXI.Container {
         this.currentRoomPosition = new PIXI.Point(0, 0);
         this.objectEntityList = new Array<ObjectEntity>();
         this.zombieList = new Array<Zombie>();
+        this.firstTime = true;
+    }
+
+    public firstLoad = () => {
+        this.requestedAddedPosition = this.getRandomRoom();
+        Game.instance.canvas.on("loop", this.loop);
     }
 
     public load = () => {
-        this.loadMap();
-
-        this.player1 = new Player('solo');
-        this.player1.addPosition(20, 20, true);
-
-        const cake = new CakeEntity();
-        cake.setPosition(new PIXI.Point(30, 40));
-        this.addObjectEntity(cake);
-
-        this.addChild(this.player1);
-
-        Game.instance.canvas.on("loop", this.loop);
+        this.firstTime = false;
+        this.requestedAddedPosition = this.getRandomRoom();
+        Game.instance.canvas.uiLayout.show()
     }
 
     public addObjectEntity = (object: ObjectEntity) => {
@@ -71,7 +70,6 @@ export class PlayGroundLayout extends PIXI.Container {
     }
 
     public destroyAllZombiesAndPerks = () => {
-        console.log('zombies and perks dead')
         this.removeChild(...this.objectEntityList, ...this.zombieList);
         this.objectEntityList = [];
         this.zombieList = [];
@@ -83,8 +81,8 @@ export class PlayGroundLayout extends PIXI.Container {
         let zombiefication = players.length === 0 ? 1 : players.map(p => p.getZombiefication()).reduce((c, z) => c + z) / players.length;
 
         // zombie
-        const zombiesNumber = GetRandomNumber(Math.trunc(zombiefication / 10), Math.trunc(zombiefication / 3));
-        for (let i = 0; i < zombiesNumber; i++) {
+        const zombiesNumber = GetRandomNumber(Math.trunc(zombiefication / 7), Math.trunc(zombiefication / 3));
+        for (let i = 0; i < (!this.firstTime ? zombiesNumber : 5); i++) {
             const zombie = new Zombie(Utils.GetRandomNumber(0, 3) === 1);
             const randomSpot = this.getRandomFreeSpot();
             zombie.addPosition(randomSpot.x,randomSpot.y, true);
@@ -92,38 +90,48 @@ export class PlayGroundLayout extends PIXI.Container {
         }
 
         // blood bags
-        const bloodBagNumber = GetRandomNumber(players.length + 1, 2 * players.length + 1);
+        const bloodBagNumber = GetRandomNumber(0, 2 * players.length + 1);
         const bloodMin = GetRandomNumber(
             Math.trunc((100 - zombiefication) / 10),
             Math.trunc(zombiefication / 5)
         );
-        for (let i = 0; i < bloodBagNumber; i++) {
+        for (let i = 0; i < (!this.firstTime ? bloodBagNumber : 2); i++) {
             const bloodBag = new BloodBagEntity(bloodMin, 50);
             bloodBag.setPosition(this.getRandomFreeSpot());
             this.addObjectEntity(bloodBag);
         }
 
         // cakes
-        if(GetRandomNumber(0, 100) === 4) {
+        if(GetRandomNumber(0, 100) === 4 || this.firstTime) {
             const cake = new CakeEntity();
             cake.setPosition(this.getRandomFreeSpot());
             this.addObjectEntity(cake);
         }
 
         // toilet paper
-        for (let i = 0; i < GetRandomNumber(0, 3); i++) {
+        for (let i = 0; i < (!this.firstTime ? GetRandomNumber(0, 3) : 10 ); i++) {
             const toiletPaper = new ToiletPaperEntity();
             toiletPaper.setPosition(this.getRandomFreeSpot());
             this.addObjectEntity(toiletPaper);
         }
 
         // voidpixel skull
-        if(GetRandomNumber(0, 50) === 4) {
+        if(GetRandomNumber(0, 50) === 4 || this.firstTime) {
             const cake = new SkullEntity();
             cake.setPosition(this.getRandomFreeSpot());
             this.addObjectEntity(cake);
         }
 
+    }
+
+    private getRandomRoom = () => {
+        const room = new PIXI.Point(
+            GetRandomNumber(0, this.map.map(r => r.x).reduce((a, x) => a = a > x ? a : x)),
+            GetRandomNumber(0, this.map.map(r => r.y).reduce((a, y) => a = a > y ? a : y))
+        );
+        return this.firstTime
+            ? room
+            : new PIXI.Point(room.x - this.currentRoomPosition.x, room.y - this.currentRoomPosition.y)
     }
 
     private getRandomFreeSpot = () => {
@@ -157,30 +165,55 @@ export class PlayGroundLayout extends PIXI.Container {
         Game.instance.canvas.uiLayout.scoreInterface.removeSecondPlayerText();
     }
 
+    private gameOver = () => {
+        this.player1 = null;
+        this.player2 = null;
+
+        Game.instance.canvas.gameOverInterface.show();
+    }
+
     public loop = () => {
-        const requestChangeRoomPlayer1 = this.player1.getRequestChangeRoom();
-        switch (this.player1.type) {
-            case "solo":
-                if(requestChangeRoomPlayer1)
-                    this.loadRoom(requestChangeRoomPlayer1);
-                break;
-            case "p1":
-                const requestChangeRoomPlayer2 = this.player2.getRequestChangeRoom();
-                if(this.player1.isDead() && this.player2.isDead())
-                    this.requestedAddedPosition = null;
-                else if((requestChangeRoomPlayer1 || this.player1.isDead()) && (requestChangeRoomPlayer2 || this.player2.isDead()))
-                    this.loadRoom(this.player1.isDead() ? requestChangeRoomPlayer2 : requestChangeRoomPlayer1);
-                break;
+        if(this.player1 && this.arePlayersDead() && !this.firstTime)
+            return this.gameOver();
+
+        if(this.player1) {
+            const requestChangeRoomPlayer1 = this.player1.getRequestChangeRoom();
+            switch (this.player1.type) {
+                case "solo":
+                    if(requestChangeRoomPlayer1)
+                        this.loadRoom(requestChangeRoomPlayer1);
+                    break;
+                case "p1":
+                    const requestChangeRoomPlayer2 = this.player2.getRequestChangeRoom();
+                    if(this.player1.isDead() && this.player2.isDead())
+                        this.requestedAddedPosition = null;
+                    else if((requestChangeRoomPlayer1 || this.player1.isDead()) && (requestChangeRoomPlayer2 || this.player2.isDead()))
+                        this.loadRoom(this.player1.isDead() ? requestChangeRoomPlayer2 : requestChangeRoomPlayer1);
+                    break;
+            }
         }
-        if(this.requestedAddedPosition) {
-            this.currentRoomPosition = new PIXI.Point(
-                this.requestedAddedPosition.x + this.currentRoomPosition.x,
-                this.requestedAddedPosition.y + this.currentRoomPosition.y
-            );
-            this.loadMap();
-            Game.instance.canvas.camera.move(this.currentRoomPosition);
-            this.requestedAddedPosition = null;
-        }
+        if(!this.requestedAddedPosition) return;
+
+        this.currentRoomPosition = new PIXI.Point(
+            this.requestedAddedPosition.x + this.currentRoomPosition.x,
+            this.requestedAddedPosition.y + this.currentRoomPosition.y
+        );
+        this.loadMap();
+        Game.instance.canvas.camera.move(this.currentRoomPosition);
+        this.requestedAddedPosition = null;
+
+        if(this.player1 || this.firstTime) return;
+
+        const randomPlayerPos = this.getRandomFreeSpot();
+
+        this.player1 = new Player('solo');
+        this.player1.addPosition(randomPlayerPos.x, randomPlayerPos.y, true);
+
+        const cake = new CakeEntity();
+        cake.setPosition(this.getRandomFreeSpot());
+        this.addObjectEntity(cake);
+
+        this.addChild(this.player1);
     }
 
     private loadMap = () => {

@@ -1,6 +1,7 @@
 
 import * as PIXI from 'pixi.js';
 import {ScoreInterface} from "./interfaces/ScoreInterface";
+import {Game} from "../Game";
 
 export class UILayout extends PIXI.Container {
 
@@ -15,5 +16,8 @@ export class UILayout extends PIXI.Container {
         this.scoreInterface = new ScoreInterface();
         this.addChild(this.scoreInterface);
     }
+
+    public hide = () => Game.instance.canvas.stage().removeChild(this);
+    public show = () => Game.instance.canvas.stage().addChild(this);
 
 }

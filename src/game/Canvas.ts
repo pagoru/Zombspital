@@ -141,21 +141,21 @@ export class Canvas extends PIXI.utils.EventEmitter {
         this.emit("loop", delta);
 
         // 15 fps loop
-        this.addedDelta8 += (delta / 8);
-        if(this.addedDelta8 > 1) {
-            const truncatedDelta = Math.trunc(delta);
-            this.emit("loop8", truncatedDelta);
+        this.addedDelta8 += delta / 8;
+        let truncatedDelta = Math.trunc(this.addedDelta8);
+        if(truncatedDelta > 0) {
             this.addedDelta8 -= truncatedDelta;
-
+            this.emit("loop8", truncatedDelta);
             this.updateFilter();
         }
 
         // 30 fps loop
-        this.addedDelta4 += (delta / 4);
-        if(this.addedDelta4 > 1) {
-            const truncatedDelta = Math.trunc(delta);
-            this.emit("loop4", truncatedDelta);
-            this.addedDelta4 -= truncatedDelta;
+        this.addedDelta4 += delta / 4;
+        let truncatedDelta2 = Math.trunc(this.addedDelta4);
+        if(truncatedDelta2 > 0) {
+            this.addedDelta4 -= truncatedDelta2;
+            this.emit("loop4", truncatedDelta2);
+            this.updateFilter();
         }
 
         devStats.forEach(stat => stat.end());
